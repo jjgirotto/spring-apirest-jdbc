@@ -4,6 +4,7 @@ import com.juliana.demo_park_api.entities.User;
 import com.juliana.demo_park_api.services.UserService;
 import com.juliana.demo_park_api.web.dto.ResponseDto;
 import com.juliana.demo_park_api.web.dto.UserCreateDto;
+import com.juliana.demo_park_api.web.dto.UserPasswordDto;
 import com.juliana.demo_park_api.web.dto.mapper.UserMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -30,9 +31,9 @@ public class UserController {
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<User> updatePassword(@PathVariable Long id, @RequestBody User user) {
-        User obj = userService.editPassword(id, user.getPassword());
-        return ResponseEntity.ok(user);
+    public ResponseEntity<Void> updatePassword(@PathVariable Long id, @RequestBody UserPasswordDto dto) {
+        User user = userService.editPassword(id, dto.getCurrentPassword(), dto.getNewPassword(), dto.getConfirmPassword());
+        return ResponseEntity.noContent().build();
     }
 
     @GetMapping
