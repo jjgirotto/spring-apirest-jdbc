@@ -7,6 +7,9 @@ import org.modelmapper.ModelMapper;
 import org.modelmapper.PropertyMap;
 import org.springframework.ui.Model;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 public class UserMapper {
 
     public static User toUser(UserCreateDto userDto) {
@@ -23,5 +26,9 @@ public class UserMapper {
         ModelMapper modelMapper = new ModelMapper();
         modelMapper.addMappings(props);
         return modelMapper.map(user, ResponseDto.class);
+    }
+
+    public static List<ResponseDto> toListDto (List<User> users) {
+        return users.stream().map(user -> toDto(user)).collect(Collectors.toList());
     }
 }
