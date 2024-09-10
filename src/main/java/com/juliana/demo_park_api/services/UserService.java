@@ -2,15 +2,21 @@ package com.juliana.demo_park_api.services;
 
 import com.juliana.demo_park_api.entities.User;
 import com.juliana.demo_park_api.repositories.UserRepository;
-import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+@RequiredArgsConstructor
 @Service
 public class UserService {
     @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
     @Transactional
-    public User salvar(User user) {
+    public User save(User user) {
         return userRepository.save(user);
+    }
+    @Transactional(readOnly = true)
+    public User searchById(Long id) {
+        return userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found"));
     }
 }
