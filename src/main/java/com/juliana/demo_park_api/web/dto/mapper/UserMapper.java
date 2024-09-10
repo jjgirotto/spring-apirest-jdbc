@@ -5,7 +5,6 @@ import com.juliana.demo_park_api.web.dto.ResponseDto;
 import com.juliana.demo_park_api.web.dto.UserCreateDto;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.PropertyMap;
-import org.springframework.ui.Model;
 
 import java.util.List;
 import java.util.stream.Collectors;

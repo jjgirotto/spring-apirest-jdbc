@@ -6,6 +6,7 @@ import com.juliana.demo_park_api.web.dto.ResponseDto;
 import com.juliana.demo_park_api.web.dto.UserCreateDto;
 import com.juliana.demo_park_api.web.dto.UserPasswordDto;
 import com.juliana.demo_park_api.web.dto.mapper.UserMapper;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,8 +20,9 @@ import java.util.List;
 public class UserController {
 
     private final UserService userService;
+
     @PostMapping
-    public ResponseEntity<ResponseDto> create(@RequestBody UserCreateDto userDto) {
+    public ResponseEntity<ResponseDto> create(@Valid @RequestBody UserCreateDto userDto) {
         User obj = userService.save(UserMapper.toUser(userDto));
         return ResponseEntity.status(HttpStatus.CREATED).body(UserMapper.toDto(obj));
     }
