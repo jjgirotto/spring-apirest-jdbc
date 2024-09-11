@@ -116,4 +116,49 @@ public class UserIT {
 
     }
 
+    @Test
+    public void createUser_WithUsernameRepeated_ReturnErrorMessage404() {
+        ErrorMessage responseDto = testClient
+                .post()
+                .uri("/api/v1/users")
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(new UserCreateDto("ana@gmail.com", "123456"))
+                .exchange()
+                .expectStatus().isEqualTo(409)
+                .expectBody(ErrorMessage.class)
+                .returnResult().getResponseBody();
+        org.assertj.core.api.Assertions.assertThat(responseDto).isNotNull();
+        org.assertj.core.api.Assertions.assertThat(responseDto.getStatus()).isEqualTo(409);
+
+    }
+
+    @Test
+    public void getUser_WithIdExists_ReturnUserStatus200() {
+        ResponseDto responseDto = testClient
+                .get()
+                .uri("/api/v1/users/101")
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(ResponseDto.class)
+                .returnResult().getResponseBody();
+        org.assertj.core.api.Assertions.assertThat(responseDto).isNotNull();
+        org.assertj.core.api.Assertions.assertThat(responseDto.getId()).isEqualTo(101);
+        org.assertj.core.api.Assertions.assertThat(responseDto.getUsername()).isEqualTo("juliana@gmail.com");
+        org.assertj.core.api.Assertions.assertThat(responseDto.getRole()).isEqualTo("ADMIN");
+
+    }
+
+    @Test
+    public void getUser_WithIdNonExists_ReturnErrorMessage404() {
+        ErrorMessage responseDto = testClient
+                .get()
+                .uri("/api/v1/users/0")
+                .exchange()
+                .expectStatus().isNotFound()
+                .expectBody(ErrorMessage.class)
+                .returnResult().getResponseBody();
+        org.assertj.core.api.Assertions.assertThat(responseDto).isNotNull();
+        org.assertj.core.api.Assertions.assertThat(responseDto.getStatus()).isEqualTo(404);
+
+    }
 }
