@@ -2,6 +2,7 @@ package com.juliana.demo_park_api.services;
 
 import com.juliana.demo_park_api.entities.User;
 import com.juliana.demo_park_api.exception.EntityNotFoundException;
+import com.juliana.demo_park_api.exception.PasswordInvalidException;
 import com.juliana.demo_park_api.exception.UsernameUniqueViolationException;
 import com.juliana.demo_park_api.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -33,11 +34,11 @@ public class UserService {
     @Transactional
     public User editPassword(Long id, String currentPassword, String newPassword, String confirmPassword) {
         if (!newPassword.equals(confirmPassword)) {
-            throw new RuntimeException("New password does not match");
+            throw new PasswordInvalidException("New password does not match");
         }
         User user = searchById(id);
         if (!user.getPassword().equals(currentPassword)) {
-            throw new RuntimeException("Current password does not match");
+            throw new PasswordInvalidException("Current password does not match");
         }
         user.setPassword(newPassword);
         return user;
