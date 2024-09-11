@@ -7,6 +7,7 @@ import com.juliana.demo_park_api.web.dto.UserCreateDto;
 import com.juliana.demo_park_api.web.dto.UserPasswordDto;
 import com.juliana.demo_park_api.web.dto.mapper.UserMapper;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -70,6 +71,12 @@ public class UserController {
         return ResponseEntity.noContent().build();
     }
 
+    @Operation(summary = "Get all users", description = "Resource to get all users",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Resources found!",
+                            content = @Content(mediaType = "application/json",
+                            array = @ArraySchema(schema = @Schema(implementation = ResponseDto.class))))
+            })
     @GetMapping
     public ResponseEntity<List<ResponseDto>> getAll() {
         List<User> users = userService.searchAll();
