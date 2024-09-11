@@ -1,11 +1,11 @@
 package com.juliana.demo_park_api.services;
 
 import com.juliana.demo_park_api.entities.User;
+import com.juliana.demo_park_api.exception.EntityNotFoundException;
 import com.juliana.demo_park_api.exception.UsernameUniqueViolationException;
 import com.juliana.demo_park_api.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,7 +28,7 @@ public class UserService {
 
     @Transactional(readOnly = true)
     public User searchById(Long id) {
-        return userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found"));
+        return userRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(String.format("User {id=%s} not found", id)));
     }
     @Transactional
     public User editPassword(Long id, String currentPassword, String newPassword, String confirmPassword) {
