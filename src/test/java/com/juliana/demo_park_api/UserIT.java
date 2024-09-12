@@ -2,6 +2,7 @@ package com.juliana.demo_park_api;
 
 import com.juliana.demo_park_api.web.dto.ResponseDto;
 import com.juliana.demo_park_api.web.dto.UserCreateDto;
+import com.juliana.demo_park_api.web.dto.UserPasswordDto;
 import com.juliana.demo_park_api.web.exception.ErrorMessage;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +10,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.reactive.server.WebTestClient;
+
+import java.util.List;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Sql(scripts = "/sql/users/users-insert.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
@@ -159,6 +162,113 @@ public class UserIT {
                 .returnResult().getResponseBody();
         org.assertj.core.api.Assertions.assertThat(responseDto).isNotNull();
         org.assertj.core.api.Assertions.assertThat(responseDto.getStatus()).isEqualTo(404);
+
+    }
+
+    @Test
+    public void updatePassword_WithValidsValues_ReturnStatus204() {
+        testClient
+                .patch()
+                .uri("/api/v1/users/101")
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(new UserPasswordDto("123456", "123457", "123457"))
+                .exchange()
+                .expectStatus().isNoContent();
+    }
+
+    @Test
+    public void updatePassword_WithIdNonExists_ReturnErrorMessage404() {
+        ErrorMessage responseDto = testClient
+                .patch()
+                .uri("/api/v1/users/0")
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(new UserPasswordDto("123456", "123457", "123457"))
+                .exchange()
+                .expectStatus().isNotFound()
+                .expectBody(ErrorMessage.class)
+                .returnResult().getResponseBody();
+        org.assertj.core.api.Assertions.assertThat(responseDto).isNotNull();
+        org.assertj.core.api.Assertions.assertThat(responseDto.getStatus()).isEqualTo(404);
+
+    }
+
+    @Test
+    public void updatePassword_WithInvalidFields_ReturnErrorMessage422() {
+        ErrorMessage responseDto = testClient
+                .patch()
+                .uri("/api/v1/users/101")
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(new UserPasswordDto("123456", "", ""))
+                .exchange()
+                .expectStatus().isEqualTo(422)
+                .expectBody(ErrorMessage.class)
+                .returnResult().getResponseBody();
+        org.assertj.core.api.Assertions.assertThat(responseDto).isNotNull();
+        org.assertj.core.api.Assertions.assertThat(responseDto.getStatus()).isEqualTo(422);
+
+        responseDto = testClient
+                .patch()
+                .uri("/api/v1/users/101")
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(new UserPasswordDto("123456", "12345", "12345"))
+                .exchange()
+                .expectStatus().isEqualTo(422)
+                .expectBody(ErrorMessage.class)
+                .returnResult().getResponseBody();
+        org.assertj.core.api.Assertions.assertThat(responseDto).isNotNull();
+        org.assertj.core.api.Assertions.assertThat(responseDto.getStatus()).isEqualTo(422);
+
+        responseDto = testClient
+                .patch()
+                .uri("/api/v1/users/101")
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(new UserPasswordDto("123456", "1234567", "1234567"))
+                .exchange()
+                .expectStatus().isEqualTo(422)
+                .expectBody(ErrorMessage.class)
+                .returnResult().getResponseBody();
+        org.assertj.core.api.Assertions.assertThat(responseDto).isNotNull();
+        org.assertj.core.api.Assertions.assertThat(responseDto.getStatus()).isEqualTo(422);
+    }
+
+    @Test
+    public void updatePassword_WithInvalidPassword_ReturnErrorMessage400() {
+        ErrorMessage responseDto = testClient
+                .patch()
+                .uri("/api/v1/users/101")
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(new UserPasswordDto("123456", "123456", "000000"))
+                .exchange()
+                .expectStatus().isEqualTo(400)
+                .expectBody(ErrorMessage.class)
+                .returnResult().getResponseBody();
+        org.assertj.core.api.Assertions.assertThat(responseDto).isNotNull();
+        org.assertj.core.api.Assertions.assertThat(responseDto.getStatus()).isEqualTo(400);
+
+        responseDto = testClient
+                .patch()
+                .uri("/api/v1/users/101")
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(new UserPasswordDto("123451", "123457", "123457"))
+                .exchange()
+                .expectStatus().isEqualTo(400)
+                .expectBody(ErrorMessage.class)
+                .returnResult().getResponseBody();
+        org.assertj.core.api.Assertions.assertThat(responseDto).isNotNull();
+        org.assertj.core.api.Assertions.assertThat(responseDto.getStatus()).isEqualTo(400);
+    }
+
+    @Test
+    public void getAllUsers_WithoutParameters_ReturnListUsersStatus200() {
+        List<ResponseDto> responseDtos = testClient
+                .get()
+                .uri("/api/v1/users")
+                .exchange()
+                .expectStatus().isOk()
+                .expectBodyList(ResponseDto.class)
+                .returnResult().getResponseBody();
+        org.assertj.core.api.Assertions.assertThat(responseDtos).isNotNull();
+        org.assertj.core.api.Assertions.assertThat(responseDtos.size()).isEqualTo(3);
 
     }
 }
