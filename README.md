@@ -1,12 +1,11 @@
 # Sistema de Posts
 
-Esta é uma aplicação utilizando Springboot, JDBC e API Rest.
-
-Permite gerenciar usuários.
+Esta é uma aplicação utilizando Springboot, JDBC e API Rest, que permite gerenciar usuários.
 
 ## Funcionalidades Principais
 
-- Inserir, atualizar, procurar por id e deletar usuário;
+- Gerenciamento de usuários como criação, atualização de senha, consulta de usuários e consulta por id e remoção.
+- Autenticação de usuário por meio de token utilizando Spring Security e JWT.
 
 ## Requisitos
 
@@ -15,6 +14,7 @@ Certifique-se de ter as seguintes ferramentas instaladas:
 - Maven 3.9.4 ou superior;
 - MySQL Workbench;
 - As dependências necessárias estão disponíveis no arquivo `pom.xml`
+- Utilize ferramentas como o Postman para teste de requisições.
 
 ## Instalação
 
@@ -30,10 +30,6 @@ Para executar o projeto no IntelliJ, use `Alt + F10` ou Run as Java Project no E
 4. **Acesse o bando de dados**
 
 Crie uma database com o nome `demo_park` no MySQL.
-
-### Estrutura do Projeto
-
-
 
 ### Contato
 
