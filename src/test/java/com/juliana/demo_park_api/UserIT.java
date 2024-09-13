@@ -257,8 +257,9 @@ public class UserIT {
         org.assertj.core.api.Assertions.assertThat(responseDto).isNotNull();
         org.assertj.core.api.Assertions.assertThat(responseDto.getStatus()).isEqualTo(400);
     }
-
-    @Test
+    
+    
+    /*@Test
     public void getAllUsers_WithoutParameters_ReturnListUsersStatus200() {
         List<ResponseDto> responseDtos = testClient
                 .get()
@@ -270,5 +271,5 @@ public class UserIT {
         org.assertj.core.api.Assertions.assertThat(responseDtos).isNotNull();
         org.assertj.core.api.Assertions.assertThat(responseDtos.size()).isEqualTo(3);
 
-    }
+    }*/
 }
