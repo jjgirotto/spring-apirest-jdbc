@@ -257,9 +257,11 @@ public class UserIT {
         org.assertj.core.api.Assertions.assertThat(responseDto).isNotNull();
         org.assertj.core.api.Assertions.assertThat(responseDto.getStatus()).isEqualTo(400);
     }
-    
-    
-    /*@Test
+
+    /*
+    the testing was not done before token settings, so it will be modified later
+    however, the 'get all users' method works correctly
+    @Test
     public void getAllUsers_WithoutParameters_ReturnListUsersStatus200() {
         List<ResponseDto> responseDtos = testClient
                 .get()
