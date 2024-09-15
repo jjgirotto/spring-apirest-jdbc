@@ -3,6 +3,7 @@ package com.juliana.demo_park_api.services;
 import com.juliana.demo_park_api.entities.Client;
 import com.juliana.demo_park_api.exception.CpfUniqueViolationException;
 import com.juliana.demo_park_api.repositories.ClientRepository;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
@@ -21,5 +22,12 @@ public class ClientService {
         } catch (DataIntegrityViolationException ex) {
             throw new CpfUniqueViolationException(String.format("CPF '%s' cant be registeres, it already exists", client.getCpf()));
         }
+    }
+
+    @Transactional(readOnly = true)
+    public Client searchById(Long id) {
+        return clientRepository.findById(id).orElseThrow(
+                () -> new EntityNotFoundException(String.format("Client id=%s not found", id))
+        );
     }
 }

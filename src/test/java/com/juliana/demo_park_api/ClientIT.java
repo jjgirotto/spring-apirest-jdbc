@@ -3,6 +3,7 @@ package com.juliana.demo_park_api;
 import com.juliana.demo_park_api.web.dto.ClientCreateDto;
 import com.juliana.demo_park_api.web.dto.ClientResponseDto;
 import com.juliana.demo_park_api.web.dto.UserCreateDto;
+import com.juliana.demo_park_api.web.dto.UserResponseDto;
 import com.juliana.demo_park_api.web.exception.ErrorMessage;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -113,5 +114,20 @@ public class ClientIT {
 //        org.assertj.core.api.Assertions.assertThat(responseBody.getStatus()).isEqualTo(403);
 //    }
 
-    
+    @Test
+    public void getUser_WithIdExistsByAdmin_ReturnClientStatus200() {
+        ClientResponseDto clientResponseDto = testClient
+                .get()
+                .uri("/api/v1/users/102")
+                .headers(JwtAuthentication.getHeaderAuthorization(testClient, "juliana@gmail.com", "123456"))
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(ClientResponseDto.class)
+                .returnResult().getResponseBody();
+        org.assertj.core.api.Assertions.assertThat(clientResponseDto).isNotNull();
+        org.assertj.core.api.Assertions.assertThat(clientResponseDto.getId()).isEqualTo(102);
+
+    }
+
+
 }
