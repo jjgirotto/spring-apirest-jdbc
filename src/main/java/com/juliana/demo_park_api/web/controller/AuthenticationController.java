@@ -2,7 +2,7 @@ package com.juliana.demo_park_api.web.controller;
 
 import com.juliana.demo_park_api.JWT.JwtToken;
 import com.juliana.demo_park_api.JWT.JwtUserDetailsService;
-import com.juliana.demo_park_api.web.dto.ResponseDto;
+import com.juliana.demo_park_api.web.dto.UserResponseDto;
 import com.juliana.demo_park_api.web.dto.UserLoginDto;
 import com.juliana.demo_park_api.web.exception.ErrorMessage;
 import io.swagger.v3.oas.annotations.Operation;
@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-@Tag(name = "Authetication", description = "Resource to proceed the API authentication")
+@Tag(name = "Authentication", description = "Resource to proceed the API authentication")
 @Slf4j
 @RequiredArgsConstructor
 @RestController
@@ -37,7 +37,7 @@ public class AuthenticationController {
     @Operation(summary = "Authenticate API", description = "Resource to authenticate API",
             responses = {
                     @ApiResponse(responseCode = "200", description = "Authentication succeed and bearer token returned!",
-                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = ResponseDto.class))),
+                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = UserResponseDto.class))),
                     @ApiResponse(responseCode = "400", description = "Invalid credentials",
                             content = @Content(mediaType = "application/json", schema = @Schema(implementation = org.springdoc.api.ErrorMessage.class))),
                     @ApiResponse(responseCode = "422", description = "Invalid fields",

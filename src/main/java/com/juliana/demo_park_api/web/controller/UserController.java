@@ -2,7 +2,7 @@ package com.juliana.demo_park_api.web.controller;
 
 import com.juliana.demo_park_api.entities.User;
 import com.juliana.demo_park_api.services.UserService;
-import com.juliana.demo_park_api.web.dto.ResponseDto;
+import com.juliana.demo_park_api.web.dto.UserResponseDto;
 import com.juliana.demo_park_api.web.dto.UserCreateDto;
 import com.juliana.demo_park_api.web.dto.UserPasswordDto;
 import com.juliana.demo_park_api.web.dto.mapper.UserMapper;
@@ -33,14 +33,14 @@ public class UserController {
     @Operation(summary = "Create a new user", description = "Resource to create a new user",
             responses = {
                 @ApiResponse(responseCode = "201", description = "Resource created!",
-                        content = @Content(mediaType = "application/json", schema = @Schema(implementation = ResponseDto.class))),
+                        content = @Content(mediaType = "application/json", schema = @Schema(implementation = UserResponseDto.class))),
                 @ApiResponse(responseCode = "409", description = "Username already registered in the system",
                         content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorMessage.class))),
                 @ApiResponse(responseCode = "422", description = "Resource not processed by invalid data",
                         content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorMessage.class)))
             })
     @PostMapping
-    public ResponseEntity<ResponseDto> create(@Valid @RequestBody UserCreateDto userDto) {
+    public ResponseEntity<UserResponseDto> create(@Valid @RequestBody UserCreateDto userDto) {
         User obj = userService.save(UserMapper.toUser(userDto));
         return ResponseEntity.status(HttpStatus.CREATED).body(UserMapper.toDto(obj));
     }
@@ -49,7 +49,7 @@ public class UserController {
             security = @SecurityRequirement(name = "security"),
             responses = {
                     @ApiResponse(responseCode = "200", description = "It requires a bearer token. Restricted access to admin/client",
-                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = ResponseDto.class))),
+                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = UserResponseDto.class))),
                     @ApiResponse(responseCode = "403", description = "User not allowed to access this resource",
                             content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorMessage.class))),
                     @ApiResponse(responseCode = "404", description = "Resource not found",
@@ -57,7 +57,7 @@ public class UserController {
             })
     @GetMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN') OR ( hasRole('CLIENT') AND #id == authentication.principal.id)")
-    public ResponseEntity<ResponseDto> getById(@PathVariable Long id) {
+    public ResponseEntity<UserResponseDto> getById(@PathVariable Long id) {
         User user = userService.searchById(id);
         return ResponseEntity.ok(UserMapper.toDto(user));
     }
@@ -66,9 +66,9 @@ public class UserController {
             security = @SecurityRequirement(name = "security"),
             responses = {
                     @ApiResponse(responseCode = "204", description = "Updated password!"),
-                    @ApiResponse(responseCode = "403", description = "User not allowed to access this resource",
-                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorMessage.class))),
                     @ApiResponse(responseCode = "400", description = "Password does not match",
+                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorMessage.class))),
+                    @ApiResponse(responseCode = "403", description = "User not allowed to access this resource",
                             content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorMessage.class))),
                     @ApiResponse(responseCode = "422", description = "Not valid fields",
                             content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorMessage.class)))
@@ -85,13 +85,13 @@ public class UserController {
             responses = {
                     @ApiResponse(responseCode = "200", description = "Resources found!",
                             content = @Content(mediaType = "application/json",
-                            array = @ArraySchema(schema = @Schema(implementation = ResponseDto.class)))),
+                            array = @ArraySchema(schema = @Schema(implementation = UserResponseDto.class)))),
                     @ApiResponse(responseCode = "403", description = "User not allowed to access this resource",
                             content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorMessage.class)))
             })
     @GetMapping
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<List<ResponseDto>> getAll() {
+    public ResponseEntity<List<UserResponseDto>> getAll() {
         List<User> users = userService.searchAll();
         return ResponseEntity.ok(UserMapper.toListDto(users));
     }

@@ -17,7 +17,4 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
         response.setHeader("www-authenticate", "Bearer realm='/api/v1/auth'");
         response.sendError(401);
     }
-
-
-
 }

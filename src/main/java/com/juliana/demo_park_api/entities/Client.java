@@ -1,9 +1,7 @@
 package com.juliana.demo_park_api.entities;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
@@ -14,22 +12,29 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
-@Getter @Setter @NoArgsConstructor
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
-@Table(name = "users")
+@Table(name = "clients")
 @EntityListeners(AuditingEntityListener.class)
-public class User implements Serializable {
+public class Client implements Serializable {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
     private Long id;
-    @Column(name = "username", nullable = false, unique = true, length = 100)
-    private String username;
-    @Column(name = "password", nullable = false, length = 200)
-    private String password;
-    @Enumerated(EnumType.STRING)
-    @Column(name = "role", nullable = false, length = 25)
-    private Role role = Role.ROLE_CLIENT;
+
+    @Column(name = "name", nullable = false, length = 100)
+    private String name;
+
+    @Column(name = "cpf", nullable = false, unique = true, length = 11)
+    private String cpf;
+
+    @OneToOne
+    @JoinColumn(name = "id_user", nullable = false)
+    private User user;
+
     @CreatedDate
     @Column(name = "creation_date")
     private LocalDateTime creationDate;
@@ -43,27 +48,16 @@ public class User implements Serializable {
     @LastModifiedBy
     private String alterBy;
 
-    public enum Role {
-        ROLE_ADMIN, ROLE_CLIENT
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        User user = (User) o;
-        return Objects.equals(id, user.id);
+        Client client = (Client) o;
+        return Objects.equals(id, client.id);
     }
 
     @Override
     public int hashCode() {
         return Objects.hash(id);
-    }
-
-    @Override
-    public String toString() {
-        return "User{" +
-                "id=" + id +
-                '}';
     }
 }
