@@ -2,9 +2,9 @@ package com.juliana.demo_park_api.services;
 
 import com.juliana.demo_park_api.entities.Client;
 import com.juliana.demo_park_api.exception.CpfUniqueViolationException;
+import com.juliana.demo_park_api.exception.EntityNotFoundException;
 import com.juliana.demo_park_api.repositories.ClientRepository;
 import com.juliana.demo_park_api.repositories.projection.ClientProjection;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
@@ -44,5 +44,12 @@ public class ClientService {
     @Transactional(readOnly = true)
     public Client searchByUserId(Long id) {
         return clientRepository.findByUserId(id);
+    }
+
+    @Transactional(readOnly = true)
+    public Client searchByCpf(String cpf) {
+        return clientRepository.findByCpf(cpf).orElseThrow(
+                () -> new EntityNotFoundException(String.format("Client cpf=%s not found", cpf))
+        );
     }
 }

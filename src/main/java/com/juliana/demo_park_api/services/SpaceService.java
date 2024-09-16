@@ -9,6 +9,8 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import static com.juliana.demo_park_api.entities.Space.StatusSpace.FREE;
+
 @Service
 @RequiredArgsConstructor
 public class SpaceService {
@@ -28,6 +30,13 @@ public class SpaceService {
     public Space searchByCode(String code) {
         return spaceRepository.findByCode(code).orElseThrow(
                 () -> new EntityNotFoundException(String.format("Space code=%s not found", code))
+        );
+    }
+
+    @Transactional(readOnly = true)
+    public Space searchByFreeSpace() {
+        return spaceRepository.findFirstByStatus(FREE).orElseThrow(
+                () -> new EntityNotFoundException("No free space found")
         );
     }
 }

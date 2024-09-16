@@ -33,7 +33,7 @@ public class Space implements Serializable {
 
     @Column(name = "status", nullable = false)
     @Enumerated(EnumType.STRING)
-    private StatusVaga status;
+    private StatusSpace status;
 
     @CreatedDate
     @Column(name = "creation_date")
@@ -48,7 +48,7 @@ public class Space implements Serializable {
     @LastModifiedBy
     private String alterBy;
 
-    public enum StatusVaga {
+    public enum StatusSpace {
         FREE, OCCUPIED
     }
 
