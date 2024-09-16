@@ -1,6 +1,5 @@
 package com.juliana.demo_park_api.config;
 
-import com.juliana.demo_park_api.JWT.CustomAccessDeniedHandler;
 import com.juliana.demo_park_api.JWT.JwtAuthenticationEntryPoint;
 import com.juliana.demo_park_api.JWT.JwtAuthorizationFilter;
 import org.springframework.context.annotation.Bean;
@@ -46,7 +45,6 @@ public class SpringSecurityConfig {
                         jwtAuthorizationFilter(), UsernamePasswordAuthenticationFilter.class
                 ).exceptionHandling(ex -> ex
                         .authenticationEntryPoint(new JwtAuthenticationEntryPoint())
-                        .accessDeniedHandler(new CustomAccessDeniedHandler())
                 ).build();
     }
 

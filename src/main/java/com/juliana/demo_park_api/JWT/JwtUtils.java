@@ -4,7 +4,6 @@ import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import lombok.extern.slf4j.Slf4j;
 
-import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -24,7 +23,7 @@ public class JwtUtils {
 
     }
 
-    private static SecretKey generateKey() {
+    private static javax.crypto.SecretKey generateKey() {
         return Keys.hmacShaKeyFor(SECRET_KEY.getBytes(StandardCharsets.UTF_8));
     }
 
@@ -42,7 +41,7 @@ public class JwtUtils {
                 .subject(username)
                 .issuedAt(issuedAt)
                 .expiration(limit)
-                .signWith(generateKey(), Jwts.SIG.HS256)
+                .signWith(generateKey())
                 .claim("role", role)
                 .compact();
         return new JwtToken(token);
@@ -51,7 +50,8 @@ public class JwtUtils {
     private static Claims getClaimFromToken (String token) {
         try {
             return Jwts.parser()
-                    .verifyWith(generateKey()).build()
+                    .verifyWith(generateKey())
+                    .build()
                     .parseSignedClaims(refactorToken(token)).getPayload();
         } catch (JwtException ex) {
             log.error(String.format("Invalid token %s", ex.getMessage()));
