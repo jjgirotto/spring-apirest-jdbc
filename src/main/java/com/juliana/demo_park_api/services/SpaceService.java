@@ -1,11 +1,9 @@
 package com.juliana.demo_park_api.services;
 
-import com.juliana.demo_park_api.entities.Client;
 import com.juliana.demo_park_api.entities.Space;
 import com.juliana.demo_park_api.exception.CodeUniqueViolationException;
-import com.juliana.demo_park_api.exception.CpfUniqueViolationException;
+import com.juliana.demo_park_api.exception.EntityNotFoundException;
 import com.juliana.demo_park_api.repositories.SpaceRepository;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
