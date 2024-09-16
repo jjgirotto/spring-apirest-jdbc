@@ -1,5 +1,6 @@
 package com.juliana.demo_park_api.services;
 
+import com.juliana.demo_park_api.entities.Client;
 import com.juliana.demo_park_api.entities.User;
 import com.juliana.demo_park_api.exception.EntityNotFoundException;
 import com.juliana.demo_park_api.exception.PasswordInvalidException;
@@ -60,4 +61,5 @@ public class UserService {
     public User.Role searchRoleByUsername(String username) {
         return userRepository.findRoleByUsername(username);
     }
+
 }
