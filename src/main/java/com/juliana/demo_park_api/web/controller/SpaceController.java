@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.headers.Header;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -52,6 +53,7 @@ public class SpaceController {
 
     @Operation(summary = "Get a space by code", description = "Resource to get space by code"  +
             "Request requires a bearer token, restricted access to Role='ADMIN'",
+            security = @SecurityRequirement(name = "security"),
             responses = {
                     @ApiResponse(responseCode = "200", description = "It requires a bearer token. Restricted access to admin",
                             content = @Content(mediaType = "application/json", schema = @Schema(implementation = SpaceResponseDto.class))),
