@@ -1,5 +1,6 @@
 package com.juliana.demo_park_api;
 
+import com.juliana.demo_park_api.web.dto.PageableDto;
 import com.juliana.demo_park_api.web.dto.ParkingCreateDto;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -164,4 +165,144 @@ public class ParkingIT {
                 .jsonPath("path").isEqualTo("/api/v1/parkings/checkin/20230313-999999")
                 .jsonPath("method").isEqualTo("GET");
     }
+
+    @Test
+    public void createCheckOut_WithRecipt_ReturnSuccess() {
+        testClient.put().uri("/api/v1/parkings/checkout/{recipt}", "20230313-101300")
+                .headers(JwtAuthentication.getHeaderAuthorization(testClient, "juliana@gmail.com", "123456"))
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody()
+                .jsonPath("plate").isEqualTo("FIT-1020")
+                .jsonPath("brand").isEqualTo("FIAT")
+                .jsonPath("model").isEqualTo("PALIO")
+                .jsonPath("color").isEqualTo("GREEN")
+                .jsonPath("clientCpf").isEqualTo("55327006050")
+                .jsonPath("dateEntry").isEqualTo("2023-03-13 10:13:00")
+                .jsonPath("spaceCode").isEqualTo("A-01")
+                .jsonPath("recipt").isEqualTo("20230313-101300")
+                .jsonPath("dateExit").exists()
+                .jsonPath("value").exists()
+                .jsonPath("discount").exists();
+
+    }
+
+    @Test
+    public void createCheckOut_WithNonExistsRecipt_ReturnError404() {
+        testClient.put().uri("/api/v1/parkings/checkout/{recipt}", "20230313-000300")
+                .headers(JwtAuthentication.getHeaderAuthorization(testClient, "juliana@gmail.com", "123456"))
+                .exchange()
+                .expectStatus().isNotFound()
+                .expectBody()
+                .jsonPath("status").isEqualTo("404")
+                .jsonPath("path").isEqualTo("/api/v1/parkings/checkout/20230313-000300")
+                .jsonPath("method").isEqualTo("PUT");
+
+    }
+
+    @Test
+    public void createCheckOut_AsClient_ReturnError403() {
+        testClient.put().uri("/api/v1/parkings/checkout/{recipt}", "20230313-101300")
+                .headers(JwtAuthentication.getHeaderAuthorization(testClient, "juli@gmail.com", "123456"))
+                .exchange()
+                .expectStatus().isForbidden()
+                .expectBody()
+                .jsonPath("status").isEqualTo("403")
+                .jsonPath("path").isEqualTo("/api/v1/parkings/checkout/20230313-101300")
+                .jsonPath("method").isEqualTo("PUT");
+
+    }
+
+    @Test
+    public void getParkings_ByClientCpf_ReturnSuccess() {
+
+        PageableDto responseBody = testClient.get()
+                .uri("/api/v1/parkings/cpf/{cpf}?size=1&page=0", "55327006050")
+                .headers(JwtAuthentication.getHeaderAuthorization(testClient, "juliana@gmail.com", "123456"))
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(PageableDto.class)
+                .returnResult().getResponseBody();
+
+        org.assertj.core.api.Assertions.assertThat(responseBody).isNotNull();
+        org.assertj.core.api.Assertions.assertThat(responseBody.getContent().size()).isEqualTo(1);
+        org.assertj.core.api.Assertions.assertThat(responseBody.getTotalPages()).isEqualTo(2);
+        org.assertj.core.api.Assertions.assertThat(responseBody.getNumber()).isEqualTo(0);
+        org.assertj.core.api.Assertions.assertThat(responseBody.getSize()).isEqualTo(1);
+
+        responseBody = testClient.get()
+                .uri("/api/v1/parkings/cpf/{cpf}?size=1&page=1", "55327006050")
+                .headers(JwtAuthentication.getHeaderAuthorization(testClient, "juliana@gmail.com", "123456"))
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(PageableDto.class)
+                .returnResult().getResponseBody();
+
+        org.assertj.core.api.Assertions.assertThat(responseBody).isNotNull();
+        org.assertj.core.api.Assertions.assertThat(responseBody.getContent().size()).isEqualTo(1);
+        org.assertj.core.api.Assertions.assertThat(responseBody.getTotalPages()).isEqualTo(2);
+        org.assertj.core.api.Assertions.assertThat(responseBody.getNumber()).isEqualTo(1);
+        org.assertj.core.api.Assertions.assertThat(responseBody.getSize()).isEqualTo(1);
+    }
+
+    @Test
+    public void getParkings_ByClientCpfAsClient_ReturnErrorStatus403() {
+
+        testClient.get()
+                .uri("/api/v1/parkings/cpf/{cpf}", "55327006050")
+                .headers(JwtAuthentication.getHeaderAuthorization(testClient, "juli@gmail.com", "123456"))
+                .exchange()
+                .expectStatus().isForbidden()
+                .expectBody()
+                .jsonPath("status").isEqualTo("403")
+                .jsonPath("path").isEqualTo("/api/v1/parkings/cpf/55327006050")
+                .jsonPath("method").isEqualTo("GET");
+    }
+
+    @Test
+    public void getParkings_ByLoggedClient_ReturnSuccess() {
+
+        PageableDto responseBody = testClient.get()
+                .uri("/api/v1/parkings?size=1&page=0")
+                .headers(JwtAuthentication.getHeaderAuthorization(testClient, "juli@gmail.com", "123456"))
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(PageableDto.class)
+                .returnResult().getResponseBody();
+
+        org.assertj.core.api.Assertions.assertThat(responseBody).isNotNull();
+        org.assertj.core.api.Assertions.assertThat(responseBody.getContent().size()).isEqualTo(1);
+        org.assertj.core.api.Assertions.assertThat(responseBody.getTotalPages()).isEqualTo(2);
+        org.assertj.core.api.Assertions.assertThat(responseBody.getNumber()).isEqualTo(0);
+        org.assertj.core.api.Assertions.assertThat(responseBody.getSize()).isEqualTo(1);
+
+        responseBody = testClient.get()
+                .uri("/api/v1/parkings?size=1&page=1")
+                .headers(JwtAuthentication.getHeaderAuthorization(testClient, "juli@gmail.com", "123456"))
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(PageableDto.class)
+                .returnResult().getResponseBody();
+
+        org.assertj.core.api.Assertions.assertThat(responseBody).isNotNull();
+        org.assertj.core.api.Assertions.assertThat(responseBody.getContent().size()).isEqualTo(1);
+        org.assertj.core.api.Assertions.assertThat(responseBody.getTotalPages()).isEqualTo(2);
+        org.assertj.core.api.Assertions.assertThat(responseBody.getNumber()).isEqualTo(1);
+        org.assertj.core.api.Assertions.assertThat(responseBody.getSize()).isEqualTo(1);
+    }
+
+    @Test
+    public void getParkings_ByLoggedClientAsAdmin_ReturnErrorStatus403() {
+
+        testClient.get()
+                .uri("/api/v1/parkings")
+                .headers(JwtAuthentication.getHeaderAuthorization(testClient, "juliana@gmail.com", "123456"))
+                .exchange()
+                .expectStatus().isForbidden()
+                .expectBody()
+                .jsonPath("status").isEqualTo("403")
+                .jsonPath("path").isEqualTo("/api/v1/parkings")
+                .jsonPath("method").isEqualTo("GET");
+    }
+
 }
