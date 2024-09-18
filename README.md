@@ -27,7 +27,7 @@ Certifique-se de ter as seguintes ferramentas instaladas:
 Siga os passos abaixo para configurar o projeto no seu ambiente de execução:
 1. **Clone o repositório**
 ```bash
-git clone https://github.com/jjgirotto/spring-apirest-jdbc.git
+git clone https://github.com/jjgirotto/spring-apirest-jdbc-parking.git
 ```
 3. **Execute o projeto**
 
