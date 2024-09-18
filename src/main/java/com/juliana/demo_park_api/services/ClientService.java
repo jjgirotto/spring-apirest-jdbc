@@ -12,8 +12,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-
 @Service
 @RequiredArgsConstructor
 public class ClientService {
@@ -25,7 +23,7 @@ public class ClientService {
         try {
             return clientRepository.save(client);
         } catch (DataIntegrityViolationException ex) {
-            throw new CpfUniqueViolationException(String.format("CPF '%s' cant be registeres, it already exists", client.getCpf()));
+            throw new CpfUniqueViolationException(String.format("CPF '%s' cant be registered, it already exists", client.getCpf()));
         }
     }
 

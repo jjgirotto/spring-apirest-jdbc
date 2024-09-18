@@ -3,7 +3,9 @@ package com.juliana.demo_park_api.web.controller;
 import com.juliana.demo_park_api.JWT.JwtUserDetails;
 import com.juliana.demo_park_api.entities.ClientSpace;
 import com.juliana.demo_park_api.repositories.projection.ClientSpaceProjection;
+import com.juliana.demo_park_api.services.ClientService;
 import com.juliana.demo_park_api.services.ClientSpaceService;
+import com.juliana.demo_park_api.services.JasperService;
 import com.juliana.demo_park_api.services.ParkingService;
 import com.juliana.demo_park_api.web.dto.PageableDto;
 import com.juliana.demo_park_api.web.dto.ParkingCreateDto;
@@ -19,6 +21,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springdoc.api.ErrorMessage;
@@ -27,12 +30,14 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.io.IOException;
 import java.net.URI;
 
 import static io.swagger.v3.oas.annotations.enums.ParameterIn.PATH;
@@ -46,6 +51,8 @@ public class ParkingController {
 
     private final ParkingService parkingService;
     private final ClientSpaceService clientSpaceService;
+    private final ClientService clientService;
+    private final JasperService jasperService;
 
     @Operation(summary = "Check-in operation", description = "Resource to entry on the parking lot" +
             "Request requires a bearer token, restricted access to Role='ADMIN'",
@@ -194,6 +201,18 @@ public class ParkingController {
         Page<ClientSpaceProjection> projection = clientSpaceService.searchAllByUserId(user.getId(), pageable);
         PageableDto dto = PageableMapper.toDto(projection);
         return ResponseEntity.ok(dto);
+    }
+
+    @GetMapping("/report")
+    @PreAuthorize("hasRole('CLIENT')")
+    public ResponseEntity<Void> getReport(HttpServletResponse response, @AuthenticationPrincipal JwtUserDetails user) throws IOException {
+        String cpf = clientService.searchByUserId(user.getId()).getCpf();
+        jasperService.addParams("CPF", cpf);
+        byte[] bytes = jasperService.generatePdf();
+        response.setContentType(MediaType.APPLICATION_PDF_VALUE);
+        response.setHeader("Content-disposition", "inline; filename=" + System.currentTimeMillis() + ".pdf");
+        response.getOutputStream().write(bytes);
+        return ResponseEntity.ok().build();
     }
 
 }

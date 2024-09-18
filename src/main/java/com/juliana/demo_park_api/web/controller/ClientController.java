@@ -8,7 +8,6 @@ import com.juliana.demo_park_api.services.UserService;
 import com.juliana.demo_park_api.web.dto.ClientCreateDto;
 import com.juliana.demo_park_api.web.dto.ClientResponseDto;
 import com.juliana.demo_park_api.web.dto.PageableDto;
-import com.juliana.demo_park_api.web.dto.UserResponseDto;
 import com.juliana.demo_park_api.web.dto.mapper.ClientMapper;
 import com.juliana.demo_park_api.web.dto.mapper.PageableMapper;
 import io.swagger.v3.oas.annotations.Operation;
