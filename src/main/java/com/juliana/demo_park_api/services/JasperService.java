@@ -27,7 +27,7 @@ public class JasperService {
     private final DataSource dataSource;
 
     private Map<String, Object> params = new HashMap<>();
-    private static final String JASPER_DIRECTORY = "classpath:reports/";
+    private static final String JASPER_DIRECTORY = "classpath:/";
 
     public void addParams (String key, Object value) {
         this.params.put("IMAGEM_DIRETORIO", JASPER_DIRECTORY);
