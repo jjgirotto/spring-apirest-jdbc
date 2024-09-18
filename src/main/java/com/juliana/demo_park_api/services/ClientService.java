@@ -23,14 +23,14 @@ public class ClientService {
         try {
             return clientRepository.save(client);
         } catch (DataIntegrityViolationException ex) {
-            throw new CpfUniqueViolationException(String.format("CPF '%s' cant be registered, it already exists", client.getCpf()));
+            throw new CpfUniqueViolationException(client.getCpf());
         }
     }
 
     @Transactional(readOnly = true)
     public Client searchById(Long id) {
         return clientRepository.findById(id).orElseThrow(
-                () -> new EntityNotFoundException(String.format("Client id=%s not found", id))
+                () -> new EntityNotFoundException("Client", String.valueOf(id))
         );
     }
 
@@ -47,7 +47,7 @@ public class ClientService {
     @Transactional(readOnly = true)
     public Client searchByCpf(String cpf) {
         return clientRepository.findByCpf(cpf).orElseThrow(
-                () -> new EntityNotFoundException(String.format("Client cpf=%s not found", cpf))
+                () -> new EntityNotFoundException("Client", cpf)
         );
     }
 }

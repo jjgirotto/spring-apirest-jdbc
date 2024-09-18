@@ -3,6 +3,7 @@ package com.juliana.demo_park_api.services;
 import com.juliana.demo_park_api.entities.Space;
 import com.juliana.demo_park_api.exception.CodeUniqueViolationException;
 import com.juliana.demo_park_api.exception.EntityNotFoundException;
+import com.juliana.demo_park_api.exception.FreeSpaceException;
 import com.juliana.demo_park_api.repositories.SpaceRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -22,21 +23,21 @@ public class SpaceService {
         try {
             return spaceRepository.save(space);
         } catch (DataIntegrityViolationException ex) {
-            throw new CodeUniqueViolationException(String.format("Space code %s already registered", space.getCode()));
+            throw new CodeUniqueViolationException("Space", space.getCode());
         }
     }
 
     @Transactional(readOnly = true)
     public Space searchByCode(String code) {
         return spaceRepository.findByCode(code).orElseThrow(
-                () -> new EntityNotFoundException(String.format("Space code=%s not found", code))
+                () -> new EntityNotFoundException("Space", code)
         );
     }
 
     @Transactional(readOnly = true)
     public Space searchByFreeSpace() {
         return spaceRepository.findFirstByStatus(FREE).orElseThrow(
-                () -> new EntityNotFoundException("No free space found")
+                () -> new FreeSpaceException()
         );
     }
 }

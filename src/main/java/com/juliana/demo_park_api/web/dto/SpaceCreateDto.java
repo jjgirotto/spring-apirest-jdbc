@@ -12,11 +12,11 @@ import lombok.Setter;
 @NoArgsConstructor @AllArgsConstructor
 public class SpaceCreateDto {
 
-    @NotBlank
-    @Size(min = 4, max = 4)
+    @NotBlank(message = "{NotBlank.spaceCreateDto.code}")
+    @Size(min = 4, max = 4, message = "{Size.spaceCreateDto.code}")
     private String code;
 
-    @NotBlank
-    @Pattern(regexp = "FREE|OCCUPIED")
+    @NotBlank(message = "{NotBlank.spaceCreateDto.status}")
+    @Pattern(regexp = "FREE|OCCUPIED", message = "{Pattern.spaceCreateDto.status}")
     private String status;
 }

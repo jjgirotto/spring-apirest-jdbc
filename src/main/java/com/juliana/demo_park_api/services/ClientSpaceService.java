@@ -2,6 +2,7 @@ package com.juliana.demo_park_api.services;
 
 import com.juliana.demo_park_api.entities.ClientSpace;
 import com.juliana.demo_park_api.exception.EntityNotFoundException;
+import com.juliana.demo_park_api.exception.ReciptCheckInNotFoundException;
 import com.juliana.demo_park_api.repositories.ClientSpaceRepository;
 import com.juliana.demo_park_api.repositories.projection.ClientSpaceProjection;
 import lombok.RequiredArgsConstructor;
@@ -24,9 +25,7 @@ public class ClientSpaceService {
     @Transactional(readOnly = true)
     public ClientSpace searchByRecipt(String recipt) {
         return clientSpaceRepository.findByReciptAndDateExitIsNull(recipt).orElseThrow(
-                () -> new EntityNotFoundException(
-                        String.format("Recipt %s not found or it checked it out", recipt)
-                )
+                () -> new ReciptCheckInNotFoundException(recipt)
         );
     }
 

@@ -1,11 +1,16 @@
-# Sistema de Posts
+# Sistema de Estacionamento
 
-Esta é uma aplicação utilizando Springboot, JDBC e API Rest, que permite gerenciar usuários.
+Esta é uma aplicação de estacionamento utilizando Springboot, JDBC e API Rest, que possui autenticações e autorizações referentes aos clientes e vagas de um estacionamento. O cliente deve ser um usuário cadastrado, que pode entrar e sair do estacionamento.
+O perfil admin também está presente gerenciando operações específicas permitidas, assim como perfil cliente.
 
 ## Funcionalidades Principais
 
-- Gerenciamento de usuários como criação, atualização de senha, consulta de usuários e consulta por id e remoção.
+- Gerenciamento de usuários como criação, atualização de senha, consulta de usuários e consulta por id.
 - Autenticação de usuário por meio de token utilizando Spring Security e JWT.
+- Criação e consulta de clientes;
+- Criação e consulta de vagas;
+- Criação e consulta de recibos;
+- Gerenciamento de operações de estacionamento: entrada e saída de veículos.
 
 ## Requisitos
 
@@ -13,6 +18,7 @@ Certifique-se de ter as seguintes ferramentas instaladas:
 - Java Development Kit (JDK) 17 ou superior;
 - Maven 3.9.4 ou superior;
 - MySQL Workbench;
+- JasperSoft 6.20.5 ou superior;
 - As dependências necessárias estão disponíveis no arquivo `pom.xml`
 - Utilize ferramentas como o Postman para teste de requisições.
 
